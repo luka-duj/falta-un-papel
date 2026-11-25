@@ -8,28 +8,60 @@
 2. **Prepara tu solicitud.** Reutiliza lo que ya has confirmado en un entorno habilitado. Si quedan datos imprescindibles, te los pide juntos y deja sus campos en blanco en el borrador.
 3. **Revisa y presenta.** Recibe el borrador o las respuestas para el formulario web, lo que te falta y el enlace de presentación. Tú revisas, firmas y presentas en la sede oficial.
 
+## Empieza sin terminal
+
+### Codex en la aplicación de escritorio de ChatGPT
+
+1. [Descarga el ZIP](https://github.com/luka-duj/falta-un-papel/archive/refs/heads/main.zip) y descomprímelo. En la app de ChatGPT, cambia a **Codex** y abre la carpeta descomprimida como un proyecto local. Selecciona la carpeta que contiene el `README`.
+2. Abre **Plugins**, elige el catálogo **falta-un-papel-alpha** y pulsa **Instalar** en **Falta un papel**. Si el catálogo aún no aparece, reinicia la app con el proyecto abierto. [Cómo descubre Codex los catálogos del proyecto](https://developers.openai.com/plugins/build/plugins#build-your-own-curated-plugin-list)
+3. Abre un chat nuevo en Codex y pega el [mensaje de prueba](#prueba-con-un-ejemplo). Si quieres seleccionar el complemento directamente, escribe `@` y elige **Falta un papel**.
+
+### Claude en la web o en la aplicación de escritorio
+
+1. Abre **Customize → Plugins → Add → Add marketplace**. Elige **Add from a repository** y pega `https://github.com/luka-duj/falta-un-papel`.
+2. Abre **falta-un-papel** en el catálogo y pulsa **Install** o **Add**. Inicia un chat nuevo y pega el [mensaje de prueba](#prueba-con-un-ejemplo). Si usas la pestaña **Code** con la misma cuenta, abre una sesión nueva y selecciona la habilidad con `/falta-un-papel:falta-un-papel`. [Instalar en Claude](https://support.claude.com/en/articles/13837440-use-plugins-in-claude) · [Usar los plugins de tu cuenta en Claude Code](https://code.claude.com/docs/en/plugins/install#plugins-from-your-claude-ai-account)
+
+### Pídeselo al agente
+
+En un chat local de **Codex** o **Claude Code**, puedes pedirle que haga la instalación por ti.
+
+> Instala el complemento Falta un papel desde https://github.com/luka-duj/falta-un-papel siguiendo el README para este cliente. Usa el instalador de plugins y dime si tengo que confirmar algo en la app. Después, dime si puedes generar un PDF y qué falta si no puedes.
+
+Si el agente necesita tu permiso o tu cliente gestiona los plugins desde un menú, te indicará dónde continuar. Después de instalarlo, abre un chat nuevo.
+
 ## Prueba con un ejemplo
 
-> Prepara una instancia general para preguntar por la disponibilidad de una sala municipal en Valdemoro. Usa datos ficticios y marca el borrador como ejemplo.
+> Usa Falta un papel para preparar una instancia general y preguntar por la disponibilidad de una sala municipal en Valdemoro. Usa datos ficticios y marca el borrador como ejemplo.
 
 El ejemplo parte del impreso enlazado en la [ficha oficial de Valdemoro](https://www.valdemoro.es/sede-electronica/tramites/instancia-general). La instancia general se usa cuando el Ayuntamiento carece de un formulario específico para lo que se solicita.
 
-## Instalar
+## Instala desde la terminal
 
-Descarga el código de este repositorio y abre su carpeta en una terminal. Para generar PDF necesitas **Python 3.11 o posterior** y estas dependencias en el entorno que usará el agente. Si solo necesitas el enlace y las respuestas, puedes usar la habilidad sin instalar el editor.
+**Codex CLI**
+
+```sh
+codex plugin marketplace add luka-duj/falta-un-papel
+codex plugin add falta-un-papel@falta-un-papel-alpha
+```
+
+**Claude Code CLI**
+
+```sh
+claude plugin marketplace add luka-duj/falta-un-papel
+claude plugin install falta-un-papel@falta-un-papel-alpha
+```
+
+Abre una sesión nueva y pega el [mensaje de prueba](#prueba-con-un-ejemplo). En **Mistral Vibe**, coloca la carpeta completa en `~/.vibe/plugins/falta-un-papel/`, comprueba `/plugins` y usa `/falta-un-papel:falta-un-papel`. Otros clientes pueden usar [la habilidad](skills/falta-un-papel/SKILL.md) junto con sus carpetas `references/` y `scripts/`. [Codex CLI](https://developers.openai.com/plugins/build/plugins#add-a-marketplace-from-the-cli) · [Claude Code CLI](https://code.claude.com/docs/en/plugins/install#install-from-your-shell) · [Mistral Vibe](https://docs.mistral.ai/vibe/code/cli/plugins)
+
+## Si quieres recibir un PDF
+
+Pide al agente que compruebe si el entorno de la sesión puede ejecutar **Python 3.11 o posterior** y devolver archivos. Si faltan las dependencias, puedes pedirle que las instale desde `skills/falta-un-papel/scripts/requirements.txt`. Si prefieres hacerlo tú, ejecuta esto desde la carpeta descomprimida, con el mismo Python que usará el agente.
 
 ```sh
 python -m pip install -r skills/falta-un-papel/scripts/requirements.txt
 ```
 
-| Cliente | Instalación |
-| --- | --- |
-| Codex | Ejecuta `codex plugin marketplace add .` y `codex plugin add falta-un-papel@falta-un-papel-alpha`. Abre una sesión nueva, selecciona **Falta un papel** y prueba el mensaje de arriba. |
-| Claude Code | Ejecuta `claude --plugin-dir .` y abre `/falta-un-papel:falta-un-papel`. |
-| Mistral Vibe | Coloca la carpeta completa en `~/.vibe/plugins/falta-un-papel/`. Abre una sesión, comprueba `/plugins` y usa `/falta-un-papel:falta-un-papel`. |
-| Otro cliente compatible | Instala [la habilidad](skills/falta-un-papel/SKILL.md) con sus carpetas `references/` y `scripts/`. |
-
-[Codex](https://developers.openai.com/plugins/build/plugins) · [Claude Code](https://code.claude.com/docs/en/plugins/overview) · [Mistral Vibe](https://docs.mistral.ai/vibe/code/cli/plugins)
+Si tu sesión no puede usar el editor, puedes pedir igualmente el enlace oficial y las respuestas listas para copiar. Un trámite web tampoco necesita el editor.
 
 ## Estado de la alfa
 

@@ -9,7 +9,7 @@ import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 FILES = frozenset({
-    ".agents/plugins/marketplace.json", ".claude-plugin/plugin.json", ".gitignore",
+    ".agents/plugins/marketplace.json", ".claude-plugin/marketplace.json", ".claude-plugin/plugin.json", ".gitignore",
     ".github/ISSUE_TEMPLATE/config.yml", ".github/ISSUE_TEMPLATE/error.yml", ".github/ISSUE_TEMPLATE/mejora.yml",
     "AVISOS.md", "CONTRIBUTING.md", "LICENSE", "PRIVACIDAD.md", "README.md", "SECURITY.md", "plugin.json",
     "skills/falta-un-papel/SKILL.md",

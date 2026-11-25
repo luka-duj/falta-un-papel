@@ -1,0 +1,11 @@
+{
+  "name": "falta-un-papel-alpha",
+  "owner": {"name": "Falta un papel"},
+  "plugins": [
+    {
+      "name": "falta-un-papel",
+      "description": "Prepara solicitudes de tu ayuntamiento en España.",
+      "source": "./"
+    }
+  ]
+}
