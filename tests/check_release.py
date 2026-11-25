@@ -1,4 +1,4 @@
-"""Audit the release allowlist and optionally write its exact contents to a ZIP."""
+"""Comprueba los archivos autorizados y permite guardarlos en un ZIP."""
 
 import argparse
 from pathlib import Path
@@ -32,7 +32,7 @@ CHECKS = {
 
 
 def clean_png(raw):
-    """Require an ordinary PNG with image data and no ancillary metadata."""
+    """Acepta un PNG con datos de imagen y sin metadatos auxiliares."""
     if not raw.startswith(b"\x89PNG\r\n\x1a\n") or len(raw) > 2_000_000:
         return False
     cursor = 8

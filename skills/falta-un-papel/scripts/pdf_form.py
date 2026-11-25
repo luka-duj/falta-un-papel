@@ -105,7 +105,7 @@ def rect_tuple(rect):
 
 
 def annotations(page):
-    # pypdf may store the Annots array itself as an indirect object.
+    # pypdf puede guardar la lista de anotaciones como un objeto indirecto.
     return (page["/Annots"] if "/Annots" in page else ())
 
 
@@ -282,7 +282,7 @@ def clear_actions(writer):
 
 
 def reject_pdf_attachments(reader):
-    # Follow the reachable document graph without decoding stream contents.
+    # Recorre los objetos enlazados del documento sin descodificar los flujos.
     pending = [reader.trailer]
     seen = set()
     while pending:
@@ -317,7 +317,7 @@ def draw_flat(layer, widget, spec, value):
     for size in (11, 10, 9, 8, 7):
         lines = [line for part in value.split("\n") for line in simpleSplit(part, "Helvetica", size, x1 - x0 - 4)]
         if (spec.multiline or len(lines) == 1) and len(lines) * (size + 2) <= y1 - y0:
-            # simpleSplit can return words wider than the available line.
+            # simpleSplit puede devolver palabras que no caben en la línea.
             if any(stringWidth(line, "Helvetica", size) > x1 - x0 - 4 for line in lines):
                 continue
             layer.setFont("Helvetica", size)
@@ -341,7 +341,7 @@ def add_layers(writer, fields, values, flat, sample):
             if not draw_flat(layer, spec.widgets[0], spec, values[name]):
                 failed.add(name)
         if sample:
-            # Use the standard review margin, and confirm its visibility on every page.
+            # Sitúa la marca en el margen. Más adelante se comprueba en todas las páginas.
             x = float(page.mediabox.left) + width / 2
             y = float(page.mediabox.top) - 15
             layer.setFillColorRGB(.62, .12, .09)
@@ -391,7 +391,7 @@ def valid_appearances(reader, fields, values):
 
 
 def review_pdf(official, submitted_draft):
-    """Compare editable fields without returning their values or changing either PDF."""
+    """Compara el estado de los campos editables y conserva ambos PDF intactos."""
     source, _, source_kind, expected, _ = inspect_pdf(official)
     draft, _, draft_kind, actual, _ = inspect_pdf(submitted_draft)
     if source_kind != "acroform" or draft_kind != "acroform" or len(source.pages) != len(draft.pages):
@@ -402,7 +402,7 @@ def review_pdf(official, submitted_draft):
     values = {}
     for name, field in expected.items():
         candidate = actual.get(name)
-        # Compare the field kind and visible anchor on every copy of that field.
+        # Compara el tipo y la posición de todas las apariciones del campo.
         anchors = sorted((widget.page, *widget.rect) for widget in field.widgets)
         seen = sorted((widget.page, *widget.rect) for widget in candidate.widgets) if candidate else []
         if (candidate is None or field.kind != candidate.kind or field.multiline != candidate.multiline
@@ -420,7 +420,7 @@ def review_pdf(official, submitted_draft):
             values[name] = value
     if not any(status != "unmatched" for status in statuses.values()):
         raise FormError("unmatched_form", "Los campos editables no coinciden con el impreso oficial facilitado.")
-    # The draft positions may differ slightly from the official blank.
+    # Las posiciones del borrador pueden variar ligeramente respecto al impreso oficial.
     for name in valid_appearances(draft, actual, values):
         statuses[name] = "appearance_unverified"
     return {"fields": [{"id": name, "label": field.label, "required": field.required, "status": statuses[name]}
@@ -428,7 +428,7 @@ def review_pdf(official, submitted_draft):
 
 
 def invisible_fields(before, after, page, coordinates):
-    # PDFium coordinates account for the visible crop box and page rotation.
+    # PDFium tiene en cuenta el recorte visible y el giro de la página.
     before_page = before[page - 1]
     after_page = after[page - 1]
     scale = min(1.5, 1800 / max(after_page.get_size()))
@@ -502,8 +502,8 @@ def write_pdf(reader, fields, values, flat, sample=False):
     clear_actions(writer)
     rejected = set()
     if not flat:
-        # A fixed font size generates a clipped appearance for long Expone
-        # fields. Zero enables pypdf's field fitting and multiline wrapping.
+        # El tamaño fijo corta textos largos en «Expone». Con cero, pypdf
+        # ajusta el tamaño y reparte el texto entre varias líneas.
         acroform = writer.root_object["/AcroForm"]
         for page in writer.pages:
             for ref in annotations(page):
