@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Comunicar un problema de seguridad
+    url: https://github.com/luka-duj/falta-un-papel/security/advisories/new
+    about: Usa el canal privado para vulnerabilidades y posibles filtraciones.

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "falta-un-papel",
+  "version": "0.2.0-alpha.2",
+  "description": "Encuentra trámites de ayuntamientos en España. Prepara un borrador del PDF oficial o respuestas para la sede electrónica.",
+  "repository": "https://github.com/luka-duj/falta-un-papel",
+  "license": "MIT",
+  "keywords": ["tramites", "ayuntamientos", "espana", "pdf"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Falta un papel",
+        "shortDescription": "Prepara solicitudes de tu ayuntamiento en España",
+        "longDescription": "Localiza la ficha oficial, rellena el PDF con los datos confirmados y señala los campos y anexos que faltan. Si el trámite es web, prepara respuestas listas para copiar. Tú revisas, firmas y presentas.",
+        "developerName": "Falta un papel",
+        "category": "Productivity",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://github.com/luka-duj/falta-un-papel",
+        "supportURL": "https://github.com/luka-duj/falta-un-papel/issues/new/choose",
+        "privacyPolicyURL": "https://github.com/luka-duj/falta-un-papel/blob/main/PRIVACIDAD.md",
+        "defaultPrompt": ["Prepara una instancia general para pedir información sobre una sala municipal en Valdemoro. Usa datos ficticios."],
+        "brandColor": "#092C28",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png"
+      }
+    }
+  }
+}

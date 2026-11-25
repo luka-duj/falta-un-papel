@@ -1,0 +1,30 @@
+{
+  "id": "es-valdemoro-instancia-general",
+  "municipality": "Valdemoro",
+  "province": "Madrid",
+  "procedure": "Instancia general",
+  "variant": "Persona física por cuenta propia",
+  "procedure_url": "https://www.valdemoro.es/sede-electronica/tramites/instancia-general",
+  "pdf_url": "https://www.valdemoro.es/sites/default/files/2026-04/instancia_general-autorell%20%281%29.pdf",
+  "sha256": "7afb3134e0ac0d47c598fc2dc0775c4ac188d48f3ec23ec61df07db058532d30",
+  "kind": "acroform",
+  "fields": {
+    "Nombre": {"label": "Nombre", "required": true},
+    "apellido": {"label": "Apellidos", "required": true},
+    "DNI": {"label": "NIF"},
+    "Domicilio": {"label": "Vía del domicilio"},
+    "Nº": {"label": "Número del domicilio"},
+    "Bloque": {"label": "Bloque"},
+    "Portal": {"label": "Portal"},
+    "Escalera": {"label": "Escalera"},
+    "Piso": {"label": "Piso"},
+    "Puerta": {"label": "Puerta"},
+    "C.P": {"label": "Código postal"},
+    "Municipio": {"label": "Municipio del domicilio"},
+    "Provincia": {"label": "Provincia del domicilio"},
+    "Tfno. fijo": {"label": "Teléfono fijo"},
+    "Tfno. móvil": {"label": "Teléfono móvil"},
+    "e-mail": {"label": "Correo electrónico"},
+    "Texto4": {"label": "Expone y petición", "required": true, "line_step": 20.25}
+  }
+}

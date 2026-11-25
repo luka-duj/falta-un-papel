@@ -1,0 +1,20 @@
+name: Proponer una mejora
+description: Sugiere un cambio que facilite preparar una solicitud municipal.
+body:
+  - type: markdown
+    attributes:
+      value: La propuesta será pública. Usa ejemplos ficticios y comparte solo fuentes públicas.
+  - type: textarea
+    id: problema
+    attributes:
+      label: ¿Qué paso te costó más y por qué?
+    validations:
+      required: true
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: ¿Qué debería hacer el complemento en ese paso?
+  - type: input
+    id: ficha
+    attributes:
+      label: Enlace público al trámite, si aplica

@@ -1,0 +1,12 @@
+{
+  "name": "falta-un-papel-alpha",
+  "plugins": [
+    {
+      "name": "falta-un-papel",
+      "interface": {"displayName": "Falta un papel"},
+      "source": {"source": "local", "path": "./"},
+      "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+      "category": "Productivity"
+    }
+  ]
+}
