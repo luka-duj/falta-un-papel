@@ -1,6 +1,6 @@
 ---
 name: falta-un-papel
-description: Encuentra, prepara, rellena o corrige una solicitud municipal española. Úsala si la persona necesita el trámite, un PDF nuevo o actualizado, o respuestas para la sede, incluso si también pide revisar el borrador antes de corregirlo. Para comprobar un borrador existente y explicar qué falta, usa revisar-solicitud.
+description: Prepara trámites municipales españoles y entrega un PDF nuevo, completado o corregido. Elige esta habilidad para «revisa mi borrador y devuélveme una copia corregida». También localiza la ficha oficial y prepara respuestas para la sede.
 license: MIT
 ---
 

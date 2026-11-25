@@ -1,6 +1,6 @@
 ---
 name: revisar-solicitud
-description: Revisa una solicitud municipal española que ya existe, como un PDF, respuestas para la sede o una lista de anexos. Úsala si la persona pregunta qué falta o qué debe corregir antes de presentar. Para crear, rellenar o devolver una copia corregida, usa falta-un-papel.
+description: Revisión de solo lectura de un borrador municipal existente. Úsala solo si se pide una lista de faltas o sugerencias, sin editar ni entregar un archivo. Si se pide una copia corregida, la habilidad aplicable es falta-un-papel.
 license: MIT
 ---
 
