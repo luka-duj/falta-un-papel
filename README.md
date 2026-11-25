@@ -1,6 +1,6 @@
 # Falta un papel
 
-¿Tienes que hacer un trámite en tu ayuntamiento y no sabes qué impreso usar ni qué adjuntar? **Falta un papel** es un complemento gratuito y de código abierto para personas que preparan solicitudes municipales en España. Encuentra el trámite oficial y te entrega un borrador del PDF o las respuestas listas para copiar en la sede electrónica.
+¿Tienes que hacer un trámite en tu ayuntamiento y no sabes qué impreso usar ni qué adjuntar? **Falta un papel** es un complemento gratuito y de código abierto para personas que preparan solicitudes municipales en España. Encuentra el trámite oficial y te entrega un borrador del PDF o las respuestas listas para copiar en la sede electrónica. Si ya tienes la solicitud, también puedes pedir que compruebe qué te falta.
 
 ![Una lupa sobre la sede electrónica, un formulario preparado y una persona que lo revisa](assets/flujo.png)
 
@@ -35,6 +35,14 @@ Si el agente necesita tu permiso o tu cliente gestiona los plugins desde un men�
 
 El ejemplo parte del impreso enlazado en la [ficha oficial de Valdemoro](https://www.valdemoro.es/sede-electronica/tramites/instancia-general). La instancia general se usa cuando el Ayuntamiento carece de un formulario específico para lo que se solicita.
 
+Si ya tienes una solicitud y solo quieres comprobarla, prueba este mensaje.
+
+> Ya tengo el borrador de mi instancia general de Valdemoro. He completado el nombre y el motivo, pero me faltan algunos campos. ¿Qué tengo que revisar antes de presentarla?
+
+Puedes pedirlo en lenguaje natural. El cliente puede elegir **Falta un papel** para preparar o editar y **Revisar mi solicitud** para comprobar qué falta en un borrador existente. Si pides que revise y devuelva una copia corregida, utiliza el flujo de preparación. En Claude Code también puedes elegir la revisión con `/falta-un-papel:revisar-solicitud`.
+
+Si ya tenías una versión con una sola habilidad, actualiza el complemento desde el catálogo y abre un chat nuevo. Si usas el ZIP en Codex, descarga la versión actual y abre la carpeta nueva.
+
 ## Instala desde la terminal
 
 **Codex CLI**
@@ -51,7 +59,7 @@ claude plugin marketplace add luka-duj/falta-un-papel
 claude plugin install falta-un-papel@falta-un-papel-alpha
 ```
 
-Abre una sesión nueva y pega el [mensaje de prueba](#prueba-con-un-ejemplo). En **Mistral Vibe**, coloca la carpeta completa en `~/.vibe/plugins/falta-un-papel/`, comprueba `/plugins` y usa `/falta-un-papel:falta-un-papel`. Otros clientes pueden usar [la habilidad](skills/falta-un-papel/SKILL.md) junto con sus carpetas `references/` y `scripts/`. [Codex CLI](https://developers.openai.com/plugins/build/plugins#add-a-marketplace-from-the-cli) · [Claude Code CLI](https://code.claude.com/docs/en/plugins/install#install-from-your-shell) · [Mistral Vibe](https://docs.mistral.ai/vibe/code/cli/plugins)
+Abre una sesión nueva y pega un [mensaje de prueba](#prueba-con-un-ejemplo). En **Mistral Vibe**, coloca la carpeta completa en `~/.vibe/plugins/falta-un-papel/` y comprueba `/plugins`. Para otros clientes, conserva juntas las dos carpetas de `skills/` con sus archivos. [Codex CLI](https://developers.openai.com/plugins/build/plugins#add-a-marketplace-from-the-cli) · [Claude Code CLI](https://code.claude.com/docs/en/plugins/install#install-from-your-shell) · [Mistral Vibe](https://docs.mistral.ai/vibe/code/cli/plugins)
 
 ## Si quieres recibir un PDF
 

@@ -4,7 +4,7 @@
   "plugins": [
     {
       "name": "falta-un-papel",
-      "description": "Prepara solicitudes de tu ayuntamiento en España.",
+      "description": "Prepara o revisa solicitudes de tu ayuntamiento en España.",
       "source": "./"
     }
   ]

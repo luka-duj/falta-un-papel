@@ -1,7 +1,7 @@
 {
   "name": "falta-un-papel",
-  "version": "0.2.0-alpha.2",
-  "description": "Encuentra trámites de ayuntamientos en España. Prepara un borrador del PDF oficial o respuestas para la sede electrónica.",
+  "version": "0.2.0-alpha.3",
+  "description": "Prepara o revisa solicitudes de ayuntamientos en España. Recibe un borrador PDF, respuestas para la sede o una lista de lo que falta.",
   "repository": "https://github.com/luka-duj/falta-un-papel",
   "license": "MIT"
 }

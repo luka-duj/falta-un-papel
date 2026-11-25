@@ -22,3 +22,11 @@ python -B skills/falta-un-papel/scripts/pdf_form.py fill "original.pdf" "borrado
 El editor devuelve `draft`, `filled`, `missing` y `unresolved`. Si el SHA-256 cambia, vuelve a inspeccionar. Nunca copies un ID de una revisión anterior. El editor conserva las páginas y verifica valores, apariencias y cambios visibles por campo. Revisa el aspecto del borrador si el cliente permite previsualizarlo. Ante campos dudosos, conserva el subconjunto verificado y explica qué falta. Los impresos planos requieren una ficha local revisada con `kind: "flat"`, SHA-256 y campos con `label`, `kind` (`text` o `checkbox`), `page` y `rect`. Reserva la firma, el registro y los campos de la Administración.
 
 Para pruebas con identidades inventadas, añade `--sample`. Para datos privados, usa una entrada estándar que el cliente pueda pasar sin incluir valores en argumentos, el historial o archivos auxiliares. La persona también puede ejecutar `fill ... --private` en su propio terminal y elegir una carpeta privada para el borrador. Para limitar la pregunta, añade `--field ID` una vez por campo pendiente. Para un PDF cifrado, firmado, dependiente de XFA o plano sin ficha, entrega el enlace al impreso y las respuestas que puedas preparar.
+
+## Revisar un borrador
+
+```sh
+python -B skills/falta-un-papel/scripts/pdf_form.py review "oficial-en-blanco.pdf" "borrador.pdf"
+```
+
+Ejecuta el comando desde la carpeta del complemento. Usa como primer archivo el PDF vigente enlazado en la ficha oficial. En tu propio terminal puedes comprobar un borrador privado y compartir solo el resumen si quieres. El comando lee ambos archivos y devuelve las etiquetas del impreso público. Cada campo figura como `present`, `empty`, `appearance_unverified` o `unmatched`. Los valores del borrador quedan en tu equipo. Una coincidencia de campos indica que se han podido comparar sus posiciones y tipos. Sigue siendo necesario comprobar la versión del impreso, las condiciones, los anexos y la validez de las respuestas. Si el borrador es plano, escaneado o está firmado, usa las etiquetas visibles y la ficha oficial para revisarlo.

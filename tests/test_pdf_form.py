@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from pypdf import PdfReader, PdfWriter
-from pypdf.generic import DictionaryObject, NameObject
+from pypdf.generic import DictionaryObject, FloatObject, NameObject
 from reportlab.pdfgen.canvas import Canvas
 
 
@@ -102,6 +102,54 @@ class EditorTests(unittest.TestCase):
         raw = editable()
         with self.assertRaisesRegex(PDF.FormError, "ha cambiado"):
             PDF.fill_pdf(raw, {"fingerprint": "0" * 64, "values": {"solicitante": "Ignorado"}})
+
+    def test_review_cli_reports_empty_fields_without_showing_or_writing_values(self):
+        with TemporaryDirectory() as temp:
+            blank = Path(temp) / "oficial.pdf"
+            draft = Path(temp) / "borrador.pdf"
+            raw = editable()
+            sample, _ = PDF.fill_pdf(raw, {
+                "fingerprint": sha256(raw).hexdigest(), "values": {"solicitante": "Persona Ficticia"},
+            })
+            blank.write_bytes(raw)
+            draft.write_bytes(sample)
+            run = subprocess.run([sys.executable, "-B", str(SCRIPT), "review", str(blank), str(draft)],
+                                 capture_output=True, check=True)
+            self.assertNotIn(b"Persona Ficticia", run.stdout)
+            self.assertEqual(run.stderr, b"")
+            fields = {field["id"]: field for field in json.loads(run.stdout)["fields"]}
+            self.assertEqual(fields["solicitante"]["status"], "present")
+            self.assertEqual(fields["direccion"], {
+                "id": "direccion", "label": "Dirección", "required": True, "status": "empty",
+            })
+            self.assertEqual(fields["asistencia"]["status"], "empty")
+            self.assertNotIn("firma", fields)
+            self.assertEqual(blank.read_bytes(), raw)
+            self.assertEqual(draft.read_bytes(), sample)
+            self.assertEqual(set(Path(temp).iterdir()), {blank, draft})
+
+    def test_review_leaves_shifted_and_unverifiable_fields_pending(self):
+        raw = editable()
+        sample, _ = PDF.fill_pdf(raw, {
+            "fingerprint": sha256(raw).hexdigest(), "values": {"solicitante": "Persona Ficticia"},
+        })
+        writer = PdfWriter(clone_from=PdfReader(BytesIO(sample)))
+        for reference in writer.pages[0].annotations:
+            widget = reference.get_object()
+            if widget.get("/T") == "solicitante":
+                widget.pop("/AP")
+            if widget.get("/T") == "direccion":
+                widget["/Rect"][0] = FloatObject(widget["/Rect"][0] + 10)
+        modified = BytesIO()
+        writer.write(modified)
+        fields = {field["id"]: field["status"] for field in PDF.review_pdf(raw, modified.getvalue())["fields"]}
+        self.assertEqual(fields["solicitante"], "appearance_unverified")
+        self.assertEqual(fields["direccion"], "unmatched")
+        self.assertEqual(fields["expone"], "empty")
+
+    def test_review_refuses_unmatched_pdf_layout(self):
+        with self.assertRaisesRegex(PDF.FormError, "comparar estos PDF"):
+            PDF.review_pdf(editable(), flat())
 
     def test_reviewed_flat_map_and_unknown_flat_fallback(self):
         raw = flat()

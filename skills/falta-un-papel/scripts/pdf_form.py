@@ -365,6 +365,43 @@ def valid_appearances(reader, fields, values):
     return failed
 
 
+def review_pdf(official, submitted_draft):
+    """Compare editable fields without returning their values or changing either PDF."""
+    source, _, source_kind, expected, _ = inspect_pdf(official)
+    draft, _, draft_kind, actual, _ = inspect_pdf(submitted_draft)
+    if source_kind != "acroform" or draft_kind != "acroform" or len(source.pages) != len(draft.pages):
+        raise FormError("unmatched_form", "No se pueden comparar estos PDF como formularios editables. Revisa sus etiquetas visibles.")
+
+    stored = draft.get_fields() or {}
+    statuses = {}
+    values = {}
+    for name, field in expected.items():
+        candidate = actual.get(name)
+        # Compare the field kind and visible anchor on every copy of that field.
+        anchors = sorted((widget.page, *widget.rect) for widget in field.widgets)
+        seen = sorted((widget.page, *widget.rect) for widget in candidate.widgets) if candidate else []
+        if (candidate is None or field.kind != candidate.kind or field.multiline != candidate.multiline
+                or field.options != candidate.options or len(anchors) != len(seen)
+                or any(page != other_page or any(abs(a - b) > 0.5 for a, b in zip(rect, other_rect))
+                       for (page, *rect), (other_page, *other_rect) in zip(anchors, seen))):
+            statuses[name] = "unmatched"
+            continue
+        value = stored[name].get("/V")
+        if (isinstance(value, (type(None), NullObject)) or not str(value).strip()
+                or (field.kind in {"checkbox", "radio"} and value == "/Off")):
+            statuses[name] = "empty"
+        else:
+            statuses[name] = "present"
+            values[name] = value
+    if not any(status != "unmatched" for status in statuses.values()):
+        raise FormError("unmatched_form", "Los campos editables no coinciden con el impreso oficial facilitado.")
+    # The draft positions may differ slightly from the official blank.
+    for name in valid_appearances(draft, actual, values):
+        statuses[name] = "appearance_unverified"
+    return {"fields": [{"id": name, "label": field.label, "required": field.required, "status": statuses[name]}
+                       for name, field in expected.items()]}
+
+
 def invisible_fields(before, after, page, coordinates):
     # PDFium coordinates account for the visible crop box and page rotation.
     before_page = before[page - 1]
@@ -545,10 +582,21 @@ def private_request(raw, requested):
     return {"fingerprint": fingerprint, "values": answers}
 
 
+def read_pdf(path):
+    with path.open("rb") as stream:
+        data = stream.read(FILE_LIMIT + 1)
+    if len(data) > FILE_LIMIT or not data.startswith(b"%PDF-"):
+        raise FormError("invalid_pdf", "Usa un archivo PDF de hasta 25 MiB.")
+    return data
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("inspect").add_argument("source", type=Path)
+    review = commands.add_parser("review")
+    review.add_argument("source", type=Path, help="Impreso oficial vigente en blanco")
+    review.add_argument("draft", type=Path, help="Borrador que quieres comprobar")
     fill = commands.add_parser("fill")
     fill.add_argument("source", type=Path)
     fill.add_argument("output", type=Path)
@@ -561,10 +609,7 @@ def main():
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stdin.reconfigure(encoding="utf-8")
     try:
-        with args.source.open("rb") as stream:
-            raw = stream.read(FILE_LIMIT + 1)
-        if len(raw) > FILE_LIMIT or not raw.startswith(b"%PDF-"):
-            raise FormError("invalid_pdf", "Usa el impreso PDF oficial en blanco de hasta 25 MiB.")
+        raw = read_pdf(args.source)
         if args.command == "inspect":
             reader, fingerprint, kind, fields, profile = inspect_pdf(raw)
             result = {
@@ -572,6 +617,8 @@ def main():
                 "profile": profile["id"] if profile else None,
                 "fields": [spec.public() for spec in fields.values()],
             }
+        elif args.command == "review":
+            result = review_pdf(raw, read_pdf(args.draft))
         else:
             if args.output.suffix.lower() != ".pdf" or args.output.exists():
                 raise FormError("output_exists", "Elige una ruta nueva para el borrador PDF.")

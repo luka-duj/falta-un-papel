@@ -14,9 +14,12 @@ FILES = frozenset({
     "AVISOS.md", "CONTRIBUTING.md", "LICENSE", "PRIVACIDAD.md", "README.md", "SECURITY.md", "plugin.json",
     "skills/falta-un-papel/SKILL.md",
     "skills/falta-un-papel/references/editor-pdf.md",
+    "skills/falta-un-papel/references/fuentes-y-datos.md",
     "skills/falta-un-papel/references/profiles/valdemoro-instancia-general.json",
     "skills/falta-un-papel/scripts/pdf_form.py",
     "skills/falta-un-papel/scripts/requirements.txt",
+    "skills/revisar-solicitud/SKILL.md",
+    "skills/revisar-solicitud/agents/openai.yaml",
     "tests/verification.md", "tests/check_release.py", "tests/test_pdf_form.py",
 })
 ARTWORK = frozenset({"assets/flujo.png", "assets/icon.png"})
