@@ -1,4 +1,4 @@
-"""Inspect or fill a local municipal PDF. No network, execution of PDF actions, or submission."""
+"""Inspecciona, rellena o revisa un impreso municipal en PDF desde tu equipo."""
 
 import argparse
 from dataclasses import dataclass, field
@@ -17,7 +17,10 @@ import warnings
 
 from PIL import ImageChops
 from pypdf import PdfReader, PdfWriter
-from pypdf.generic import ContentStream, FloatObject, NameObject, NullObject, TextStringObject
+from pypdf.generic import (
+    ArrayObject, ContentStream, DictionaryObject, FloatObject, IndirectObject,
+    NameObject, NullObject, TextStringObject,
+)
 from pypdfium2 import PdfDocument
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.lib.utils import simpleSplit
@@ -278,6 +281,28 @@ def clear_actions(writer):
                 node.pop(NameObject("/A"), None)
 
 
+def reject_pdf_attachments(reader):
+    # Follow the reachable document graph without decoding stream contents.
+    pending = [reader.trailer]
+    seen = set()
+    while pending:
+        node = pending.pop()
+        if isinstance(node, IndirectObject):
+            reference = (node.idnum, node.generation)
+            if reference in seen:
+                continue
+            seen.add(reference)
+            pending.append(node.get_object())
+        elif isinstance(node, DictionaryObject):
+            if (any(key in node for key in ("/EmbeddedFiles", "/AF", "/EF"))
+                    or ("/Type" in node and node["/Type"] == "/EmbeddedFile")
+                    or ("/Subtype" in node and node["/Subtype"] == "/FileAttachment")):
+                raise FormError("embedded_files", "El PDF contiene archivos adjuntos. Usa un impreso oficial sin adjuntos.")
+            pending.extend(node.values())
+        elif isinstance(node, ArrayObject):
+            pending.extend(node)
+
+
 def draw_flat(layer, widget, spec, value):
     x0, y0, x1, y1 = widget.rect
     if spec.kind == "checkbox":
@@ -415,8 +440,12 @@ def invisible_fields(before, after, page, coordinates):
         for name, (left, bottom, right, top) in coordinates:
             x1, y1 = converter.to_bitmap(left, bottom)
             x2, y2 = converter.to_bitmap(right, top)
-            bounds = min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2)
-            if diff.crop(bounds).getbbox() is None:
+            left_px, right_px = sorted((x1, x2))
+            top_px, bottom_px = sorted((y1, y2))
+            if not (0 <= left_px < right_px <= diff.width and 0 <= top_px < bottom_px <= diff.height):
+                yield name
+                continue
+            if diff.crop((left_px, top_px, right_px, bottom_px)).getbbox() is None:
                 yield name
     finally:
         original.close()
@@ -504,13 +533,14 @@ def fill_pdf(original, request, sample=False, profiles=None):
     reader, fingerprint, kind, fields, _ = inspect_pdf(original, profiles)
     if request.get("fingerprint") != fingerprint:
         raise FormError("changed_form", "El PDF ha cambiado. Vuelve a inspeccionar el impreso antes de usar el mapa.")
+    reject_pdf_attachments(reader)
     if not fields:
         raise FormError("unmapped_form", "La revisión no tiene campos editables verificados.")
     answers = request.get("values")
     extra_required = request.get("required", [])
     if (not isinstance(answers, dict) or not isinstance(extra_required, list)
             or any(not isinstance(name, str) or name not in fields for name in extra_required)):
-        raise FormError("invalid_input", "Usa los identificadores de campos devueltos por inspect.")
+        raise FormError("invalid_input", "Usa los identificadores de campo que devuelve inspect.")
     unresolved = []
     accepted = {}
     for name, value in answers.items():
@@ -544,6 +574,7 @@ def fill_pdf(original, request, sample=False, profiles=None):
         if unexpected:
             raise FormError("verification_failed", "No se pudo reconstruir la copia verificada.")
         reopened = PdfReader(BytesIO(result))
+    reject_pdf_attachments(reopened)
     after_values = protected_values(reopened)
     if (len(reopened.pages) != len(reader.pages)
             or {key: value for key, value in before_values.items() if key not in accepted}

@@ -9,7 +9,7 @@ python -B skills/falta-un-papel/scripts/pdf_form.py fill "original.pdf" "borrado
 
 `inspect` devuelve el SHA-256 como `fingerprint`, el formato y los campos. Cada campo tiene `id`, etiqueta, origen de la etiqueta, tipo, opciones y posiciones. Los números de página empiezan en 1 y las coordenadas PDF se expresan desde la esquina inferior izquierda. Si `label_source` es `id`, el nombre puede ser técnico. Confirma el significado con su posición en la página, el texto visible o las instrucciones oficiales antes de asociar un valor. Si hay nombres de campo repetidos en secciones distintas, conserva el identificador completo y la sección.
 
-`fill` lee un objeto por la entrada estándar. Pon en `values` solo los valores confirmados y, en `required`, los IDs que la fuente establece como obligatorios para la variante y que el editor ha podido identificar.
+`fill` lee un objeto por la entrada estándar. Pon en `values` solo los valores confirmados y, en `required`, los identificadores de los campos obligatorios para ese trámite que el editor ha podido localizar.
 
 ```json
 {
@@ -19,9 +19,9 @@ python -B skills/falta-un-papel/scripts/pdf_form.py fill "original.pdf" "borrado
 }
 ```
 
-El editor devuelve `draft`, `filled`, `missing` y `unresolved`. Si el SHA-256 cambia, vuelve a inspeccionar. Nunca copies un ID de una revisión anterior. El editor conserva las páginas y verifica valores, apariencias y cambios visibles por campo. Revisa el aspecto del borrador si el cliente permite previsualizarlo. Ante campos dudosos, conserva el subconjunto verificado y explica qué falta. Los impresos planos requieren una ficha local revisada con `kind: "flat"`, SHA-256 y campos con `label`, `kind` (`text` o `checkbox`), `page` y `rect`. Reserva la firma, el registro y los campos de la Administración.
+El editor devuelve `draft`, `filled`, `missing` y `unresolved`. Si el SHA-256 cambia, vuelve a inspeccionar el impreso y comprueba sus identificadores de nuevo. El editor conserva las páginas y comprueba los valores y su aspecto en cada campo. Deja pendientes los campos que sobresalen de la página o que no puede comprobar. Revisa el aspecto del borrador si el cliente permite previsualizarlo. Los impresos planos requieren una ficha local revisada con `kind: "flat"`, SHA-256 y campos con `label`, `kind` (`text` o `checkbox`), `page` y `rect`. Reserva la firma, el registro y los campos de la Administración.
 
-Para pruebas con identidades inventadas, añade `--sample`. Para datos privados, usa una entrada estándar que el cliente pueda pasar sin incluir valores en argumentos, el historial o archivos auxiliares. La persona también puede ejecutar `fill ... --private` en su propio terminal y elegir una carpeta privada para el borrador. Para limitar la pregunta, añade `--field ID` una vez por campo pendiente. Para un PDF cifrado, firmado, dependiente de XFA o plano sin ficha, entrega el enlace al impreso y las respuestas que puedas preparar.
+Para pruebas con identidades inventadas, añade `--sample`. Para datos privados, usa una entrada estándar que el cliente pueda pasar sin incluir valores en argumentos, el historial o archivos auxiliares. La persona también puede ejecutar `fill ... --private` en su propio terminal y elegir una carpeta privada para el borrador. Para limitar la pregunta, añade `--field ID` una vez por campo pendiente. Usa un impreso oficial sin archivos incorporados. Para un PDF con adjuntos, cifrado, firmado, dependiente de XFA o plano sin ficha, entrega el enlace al impreso y las respuestas que puedas preparar.
 
 ## Revisar un borrador
 

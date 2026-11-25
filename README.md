@@ -12,8 +12,8 @@
 
 ### Codex en la aplicación de escritorio de ChatGPT
 
-1. [Descarga el ZIP](https://github.com/luka-duj/falta-un-papel/archive/refs/heads/main.zip) y descomprímelo. En la app de ChatGPT, cambia a **Codex** y abre la carpeta descomprimida como un proyecto local. Selecciona la carpeta que contiene el `README`.
-2. Abre **Plugins**, elige el catálogo **falta-un-papel-alpha** y pulsa **Instalar** en **Falta un papel**. Si el catálogo aún no aparece, reinicia la app con el proyecto abierto. [Cómo descubre Codex los catálogos del proyecto](https://developers.openai.com/plugins/build/plugins#build-your-own-curated-plugin-list)
+1. [Descarga el ZIP](https://github.com/luka-duj/falta-un-papel/archive/refs/heads/main.zip) y descomprímelo. En la aplicación de ChatGPT, cambia a **Codex** y abre la carpeta descomprimida como un proyecto local. Selecciona la carpeta que contiene el `README`.
+2. Abre **Plugins**, elige el catálogo **falta-un-papel-alpha** y pulsa **Instalar** en **Falta un papel**. Si el catálogo aún no aparece, reinicia la aplicación con el proyecto abierto. [Cómo descubre Codex los catálogos del proyecto](https://developers.openai.com/plugins/build/plugins#build-your-own-curated-plugin-list)
 3. Abre un chat nuevo en Codex y pega el [mensaje de prueba](#prueba-con-un-ejemplo). Si quieres seleccionar el complemento directamente, escribe `@` y elige **Falta un papel**.
 
 ### Claude en la web o en la aplicación de escritorio
@@ -25,7 +25,7 @@
 
 En un chat local de **Codex** o **Claude Code**, puedes pedirle que haga la instalación por ti.
 
-> Instala el complemento Falta un papel desde https://github.com/luka-duj/falta-un-papel siguiendo el README para este cliente. Usa el instalador de plugins y dime si tengo que confirmar algo en la app. Después, dime si puedes generar un PDF y qué falta si no puedes.
+> Instala el complemento Falta un papel desde https://github.com/luka-duj/falta-un-papel siguiendo las instrucciones para este cliente. Usa el instalador de complementos y dime si tengo que confirmar algo en la aplicación. Después, dime si puedes generar un PDF y qué necesitas para hacerlo.
 
 Si el agente necesita tu permiso o tu cliente gestiona los plugins desde un menú, te indicará dónde continuar. Después de instalarlo, abre un chat nuevo.
 
@@ -43,7 +43,7 @@ Puedes pedirlo en lenguaje natural. El cliente puede elegir **Falta un papel** p
 
 Si ya tenías una versión con una sola habilidad, actualiza el complemento desde el catálogo y abre un chat nuevo. Si usas el ZIP en Codex, descarga la versión actual y abre la carpeta nueva.
 
-## Instala desde la terminal
+## Instala desde el terminal
 
 **Codex CLI**
 
@@ -75,7 +75,7 @@ Si tu sesión no puede usar el editor, puedes pedir igualmente el enlace oficial
 
 El editor local está probado con impresos oficiales editables y con un impreso plano de prueba que tiene un mapa para esa versión. La búsqueda también puede localizar trámites de municipios sin un perfil previo. Si el cliente carece de ejecución o de entrega de archivos, como ocurre en algunos móviles, la habilidad entrega el enlace y las respuestas en texto. Los tres paquetes de instalación están incluidos. La validación de extremo a extremo en cada cliente sigue abierta. [Pruebas y criterios de verificación](tests/verification.md)
 
-Antes de introducir datos personales, consulta [cómo se manejan los datos](PRIVACIDAD.md). El [editor local](skills/falta-un-papel/references/editor-pdf.md) también admite entrada privada desde tu propio terminal.
+Antes de introducir datos personales, consulta [cómo se gestionan tus datos](PRIVACIDAD.md). También puedes introducirlos en privado con el [editor local](skills/falta-un-papel/references/editor-pdf.md) desde tu propio terminal.
 
 ## Cuéntanos qué mejorar
 

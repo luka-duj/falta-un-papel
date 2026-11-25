@@ -7,9 +7,10 @@ import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import Mock, patch
 
 from pypdf import PdfReader, PdfWriter
-from pypdf.generic import DictionaryObject, FloatObject, NameObject
+from pypdf.generic import ArrayObject, DictionaryObject, FloatObject, NameObject
 from reportlab.pdfgen.canvas import Canvas
 
 
@@ -178,6 +179,46 @@ class EditorTests(unittest.TestCase):
         draft = PdfReader(BytesIO(output))
         self.assertNotIn("/OpenAction", draft.root_object)
         self.assertNotIn("/AA", draft.pages[0].annotations[0].get_object())
+
+    def test_fill_rejects_pdfs_with_document_or_page_attachments(self):
+        raw = editable()
+        for location in ("documento", "página"):
+            with self.subTest(location=location):
+                writer = PdfWriter(clone_from=PdfReader(BytesIO(raw)))
+                if location == "documento":
+                    writer.add_attachment("nota.txt", b"Nota de prueba")
+                else:
+                    writer.pages[0]["/Annots"].append(DictionaryObject({
+                        NameObject("/Subtype"): NameObject("/FileAttachment"),
+                    }))
+                pdf = BytesIO()
+                writer.write(pdf)
+                source = pdf.getvalue()
+                with self.assertRaises(PDF.FormError) as error:
+                    PDF.fill_pdf(source, {"fingerprint": sha256(source).hexdigest(),
+                                          "values": {"solicitante": "Persona de prueba"}})
+                self.assertEqual(error.exception.code, "embedded_files")
+
+    def test_fill_refuses_an_associated_file_on_a_form_page(self):
+        writer = PdfWriter(clone_from=PdfReader(BytesIO(editable())))
+        writer.pages[0][NameObject("/AF")] = ArrayObject([DictionaryObject()])
+        pdf = BytesIO()
+        writer.write(pdf)
+        source = pdf.getvalue()
+        with self.assertRaisesRegex(PDF.FormError, "PDF contiene archivos adjuntos"):
+            PDF.fill_pdf(source, {"fingerprint": sha256(source).hexdigest(),
+                                  "values": {"solicitante": "Persona de prueba"}})
+
+    def test_visual_verification_crops_only_nonempty_bounds_inside_the_page(self):
+        page = Mock()
+        page.get_size.return_value = (10, 10)
+        page.render.return_value.get_posconv.return_value.to_bitmap.side_effect = lambda x, y: (x, y)
+        difference = Mock(width=10, height=10)
+        difference.crop.return_value.getbbox.return_value = (1, 1, 3, 3)
+        coordinates = [("fuera", (-1, 0, 4, 4)), ("vacío", (2, 1, 2, 5)), ("borde", (0, 0, 10, 10))]
+        with patch.object(PDF.ImageChops, "difference", return_value=difference):
+            self.assertEqual(list(PDF.invisible_fields([page], [page], 1, coordinates)), ["fuera", "vacío"])
+        difference.crop.assert_called_once_with((0, 0, 10, 10))
 
     def test_cli_leaves_existing_file_intact_and_returns_no_values(self):
         with TemporaryDirectory() as temp:

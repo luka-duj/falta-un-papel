@@ -38,4 +38,4 @@ El [auditor](check_release.py) compara el árbol con la lista de archivos previs
 
 Con `--archive RUTA` el auditor crea un ZIP a partir de los archivos ya comprobados, con rutas relativas y metadatos fijos. Usa un destino fuera del árbol del paquete. Guarda los resultados de las pruebas y los PDF descargados o generados fuera del árbol.
 
-En GitHub, revisa que `main` coincida con el árbol auditado y que el nombre y correo del commit sean los que quieres publicar. Comprueba el selector de incidencias y, al abrir el repositorio al público, habilita el canal privado de vulnerabilidades desde **Settings → Advanced Security**. Verifica el enlace de reporte desde una cuenta sin permisos de mantenimiento.
+En GitHub, comprueba que `main` coincide con el árbol auditado y que el nombre y el correo de autoría de los cambios sean los que quieres publicar. Comprueba el selector de incidencias y, al abrir el repositorio al público, habilita el canal privado de vulnerabilidades desde **Settings → Advanced Security**. Comprueba que una cuenta sin permisos de mantenimiento puede abrir el formulario privado.

@@ -17,4 +17,4 @@ body:
   - type: input
     id: ficha
     attributes:
-      label: Enlace público al trámite, si aplica
+      label: Enlace público al trámite, si procede

@@ -3,12 +3,12 @@ description: Informa de un enlace roto, un campo incorrecto o cualquier error re
 body:
   - type: markdown
     attributes:
-      value: Este reporte será público. Usa datos ficticios y omite documentos reales, credenciales y conversaciones privadas.
+      value: Esta incidencia será pública. Usa datos ficticios y omite documentos reales, credenciales y conversaciones privadas.
   - type: input
     id: entorno
     attributes:
       label: Cliente y versión del complemento
-      placeholder: Codex, Falta un papel 0.2.0-alpha.2
+      placeholder: Codex de escritorio, Falta un papel 0.2.0-alpha.5
     validations:
       required: true
   - type: input
